@@ -37,6 +37,12 @@ export async function importCommand(url) {
       const spin = logger.spinner('Cloning repository...');
       spin.start();
 
+      // Validate branch name to prevent shell injection
+      if (parsed.branch && !/^[a-zA-Z0-9_\-\.\/]+$/.test(parsed.branch)) {
+        logger.error(`Invalid branch name: "${parsed.branch}"`);
+        process.exit(1);
+      }
+
       const cloneUrl = `https://github.com/${parsed.owner}/${parsed.repo}.git`;
       await execAsync(`git clone --depth 1 ${parsed.branch ? `-b ${parsed.branch}` : ''} ${cloneUrl} "${tempDir}"`, {
         timeout: 60000,
