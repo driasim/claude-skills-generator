@@ -61,14 +61,26 @@ export async function listSkills(baseDir = process.cwd()) {
   });
 }
 
+// Validate skill name to prevent path traversal attacks
+function validateSkillName(skillName) {
+  if (!skillName || typeof skillName !== 'string') {
+    throw new Error(`Invalid skill name: "${skillName}"`);
+  }
+  if (!/^[a-z][a-z0-9-]*$/.test(skillName)) {
+    throw new Error(`Invalid skill name: "${skillName}". Skill names must start with a lowercase letter and contain only lowercase letters, digits, and hyphens.`);
+  }
+}
+
 // Read skill file
 export async function readSkill(skillName, baseDir = process.cwd()) {
+  validateSkillName(skillName);
   const skillPath = getSkillFilePath(skillName, baseDir);
   return fs.readFile(skillPath, 'utf-8');
 }
 
 // Write skill file
 export async function writeSkill(skillName, content, baseDir = process.cwd()) {
+  validateSkillName(skillName);
   const skillDir = getSkillPath(skillName, baseDir);
   const skillFile = getSkillFilePath(skillName, baseDir);
 
@@ -95,12 +107,14 @@ export async function createSkillStructure(skillName, baseDir = process.cwd()) {
 
 // Delete a skill
 export async function deleteSkill(skillName, baseDir = process.cwd()) {
+  validateSkillName(skillName);
   const skillDir = getSkillPath(skillName, baseDir);
   await fs.rm(skillDir, { recursive: true, force: true });
 }
 
 // Copy skill to another location
 export async function copySkill(skillName, destPath, baseDir = process.cwd()) {
+  validateSkillName(skillName);
   const skillDir = getSkillPath(skillName, baseDir);
   await fs.cp(skillDir, destPath, { recursive: true });
 }
