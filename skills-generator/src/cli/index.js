@@ -22,6 +22,7 @@ export function run() {
     .version('1.0.0')
     .option('--no-mascot', 'disable HOOT-9000 mascot')
     .option('--sarcasm', 'enable sarcastic mascot mode')
+    .option('--no-color', 'disable colorized output')
     .hook('preAction', (thisCommand) => {
       const opts = thisCommand.opts();
       mascot.configureMascot({
