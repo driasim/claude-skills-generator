@@ -1,5 +1,9 @@
 #!/usr/bin/env node
 
-import { run } from '../src/cli/index.js';
+import yargs from "yargs";
+import { hideBin } from "yargs/helpers";
 
-run();
+const argv = yargs(hideBin(process.argv))
+  .parse();
+
+console.log("CLI ready");
